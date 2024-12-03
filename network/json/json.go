@@ -1,6 +1,7 @@
 package json
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -129,8 +130,9 @@ func (p *Processor) Route(msg interface{}, userData interface{}) error {
 	if i.msgHandler != nil {
 		i.msgHandler([]interface{}{msg, userData})
 	}
+	ctx := util.NewTraceIDContext(context.Background(), util.MustUUID())
 	if i.msgRouter != nil {
-		i.msgRouter.Go(msgType, msg, userData)
+		i.msgRouter.Go(msgType, msg, userData, ctx)
 	}
 	return nil
 }
